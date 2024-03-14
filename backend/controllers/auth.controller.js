@@ -10,7 +10,7 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: "Password don't match" })
     }
 
-    const user = await User.findOne({ username })
+    const user = await User.findOne({ username: username })
     // Check unique username
     if (user) {
       return res.status(400).json({ error: "Username already existed" })
@@ -30,19 +30,24 @@ export const signup = async (req, res) => {
       profilePic: gender === 'male' ? boyProfilePic : girlProfilePic
     })
     if (newUser) {
-      await generateTokenAndSetCookie(newUser._id, res)
+      // await generateTokenAndSetCookie(newUser._id, res)
       await newUser.save()
 
       res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        username: newUser.username,
-        profilePic: newUser.profilePic
+        statusCode: 201,
+        message: "Signup successfully",
+        data: {
+          _id: newUser._id,
+          fullName: newUser.fullName,
+          username: newUser.username,
+          profilePic: newUser.profilePic
+        }
       })
     }
     else {
       res.status(400).json({
-        error: 'Invalid user'
+        statusCode: 400,
+        message: "Invalid user"
       })
     }
 
@@ -50,7 +55,8 @@ export const signup = async (req, res) => {
   catch (error) {
     console.log("Error while signup", error.message)
     res.status(500).json({
-      error: 'Internal Server Error'
+      statusCode: 500,
+      message: 'Internal Server Error'
     })
   }
 }
@@ -58,32 +64,50 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body
-    const user = User.findOne({ username })
+    const user = await User.findOne({ username: username })
 
     const isPasswordCorrect = bcrypt.compareSync(password, user.password || '')
     if (!user || !isPasswordCorrect) {
       res.status(400).json({
-        error: "Invalid username or password"
+        statusCode: 400,
+        message: "Invalid username or password"
+      })
+    }
+    else {
+      generateTokenAndSetCookie(user._id, res)
+      res.status(200).json({
+        statusCode: 200,
+        message: "Login successfully",
+        data: {
+          _id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          profilePic: user.profilePic
+        }
       })
     }
 
-    generateTokenAndSetCookie(user._id, res)
-
-    res.status(200).json({
-      _id: user._id,
-      fullName: user.fullName,
-      username: user.username,
-      profilePic: user.profilePic
-    })
-
   } catch (error) {
     res.status(500).json({
-      error: 'Internal Server Error'
+      statusCode: 500,
+      message: 'Internal Server Error'
     })
   }
 }
 
 export const logout = (req, res) => {
-  console.log("Logout")
-  res.send('Logout')
+  try {
+    res.cookie('access_token', '', {
+      maxAge: 0
+    })
+    res.status(200).json({
+      statusCode: 200,
+      message: "Logout successfully"
+    })
+  } catch (error) {
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Internal Server Error'
+    })
+  }
 }
