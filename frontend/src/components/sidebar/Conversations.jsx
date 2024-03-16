@@ -1,17 +1,32 @@
-import React from 'react'
-import Conversation from './Conversation'
+import Conversation from "./Conversation";
+import { useEffect } from "react";
+import useGetConversations from "../../hooks/useGetConversations.js";
+import { getRandomEmoji } from "../../utils/emojis.js";
 
 const Conversations = () => {
-  return (
- 		<div className='py-2 flex flex-col overflow-auto'>
- 			<Conversation />
- 			<Conversation />
- 			<Conversation />
- 			<Conversation />
- 			<Conversation />
- 			<Conversation />
- 		</div>
-  )
-}
+  const { getConversations, conversations } = useGetConversations();
 
-export default Conversations
+  useEffect(() => {
+    getConversations();
+  }, []);
+
+  console.log(conversations);
+  return (
+    <div className="py-2 flex flex-col overflow-auto">
+      {conversations.map((conversation, index) => {
+        return (
+          <Conversation
+            key={conversation._id}
+            conversation={conversation}
+            avatar={conversation.profilePic}
+            fullName={conversation.fullName}
+            icon={getRandomEmoji()}
+            lastIndex={conversations.length - 1 === index}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+export default Conversations;
