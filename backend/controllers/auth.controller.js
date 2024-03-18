@@ -7,13 +7,13 @@ export const signup = async (req, res) => {
     const { fullName, username, password, confirmPassword, gender } = req.body
     // Check password
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: "Password don't match" })
+      res.status(400).json({ message: "Password don't match" })
     }
 
     const user = await User.findOne({ username: username })
     // Check unique username
     if (user) {
-      return res.status(400).json({ error: "Username already existed" })
+      res.status(400).json({ message: "Username already existed" })
     }
     // Hash password
     const salt = bcrypt.genSaltSync(10);
@@ -33,8 +33,8 @@ export const signup = async (req, res) => {
       // await generateTokenAndSetCookie(newUser._id, res)
       await newUser.save()
 
-      res.status(201).json({
-        statusCode: 201,
+      res.status(200).json({
+        statusCode: 200,
         message: "Signup successfully",
         data: {
           _id: newUser._id,

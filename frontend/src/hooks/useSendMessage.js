@@ -2,18 +2,23 @@ import { useState } from "react"
 import conversationsStore from "../store/conversations.store"
 
 const useSendMessage = () => {
-  const [loading, setLoading] = useState(false)
-  const { selectedConversation } = conversationsStore()
+  const [loadingSendMsg, setLoading] = useState(false)
+  const { messages, setMessages, selectedConversation } = conversationsStore()
   const sendMessage = async (message) => {
+    console.log('do send messages')
     setLoading(true)
     try {
-      await fetch(`/api/message/send/${selectedConversation._id}`, {
+      const res = await fetch(`/api/message/send/${selectedConversation._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message }),
       })
+
+      const data = await (res.json())
+      setMessages([...messages, data.data]);
+      console.log(data.data)
     } catch (error) {
       console.log(error.message)
     } finally {
@@ -21,7 +26,7 @@ const useSendMessage = () => {
     }
   }
 
-  return { loading, sendMessage }
+  return { loadingSendMsg, sendMessage }
 }
 
 export default useSendMessage

@@ -1,33 +1,30 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import conversationsStore from "../store/conversations.store"
 
 const useGetMessages = () => {
-  const [loading, setLoading] = useState()
-  const [messages, setMessages] = useState([])
-  const { selectedConversation } = conversationsStore()
+  const [loading, setLoading] = useState(false)
+  const { messages, setMessages, selectedConversation } = conversationsStore()
 
   const getMessages = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await fetch(`/api/message/${selectedConversation._id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      const data = await res.json()
-      if (data.statusCode === 200) {
-        setMessages(data.data.message)
-      }
+      const res = await fetch(`/api/message/${selectedConversation._id}`);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setMessages(data.data.messages);
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  return { loading, messages, getMessages }
+  useEffect(() => {
+    console.log('do fetch messages')
+    getMessages();
+  }, [selectedConversation?._id, setMessages]);
+
+  return { loading, messages }
 }
 
 export default useGetMessages

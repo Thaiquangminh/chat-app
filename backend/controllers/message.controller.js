@@ -77,11 +77,7 @@ export const sendMessage = async (req, res) => {
     await Promise.all([conversation.save(), newMessage.save()])
     res.status(200).json({
       statusCode: 200,
-      data: {
-        senderId: senderId,
-        receiverId: receiverId,
-        message: newMessage.message
-      }
+      data: newMessage
     })
 
   } catch (error) {
@@ -104,7 +100,7 @@ export const getMessage = async (req, res) => {
       res.status(200).json({
         statusCode: 200,
         data: {
-          message: []
+          messages: []
         }
       })
     }

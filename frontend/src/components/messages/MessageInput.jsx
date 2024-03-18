@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { BsSend } from "react-icons/bs";
 import useSendMessage from "../../hooks/useSendMessage";
-import { useState } from "react";
 
 const MessageInput = () => {
   const [message, setMessage] = useState("");
   const { loading, sendMessage } = useSendMessage(message);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim() !== "") {
@@ -12,6 +13,7 @@ const MessageInput = () => {
       setMessage("");
     }
   };
+
   return (
     <form className="px-4 my-3" onSubmit={handleSendMessage}>
       <div className="w-full relative">

@@ -1,10 +1,18 @@
+import { useEffect } from "react";
 import conversationsStore from "../../store/conversations.store";
 import MessageInput from "./MessageInput";
 import Messages from "./Messages";
 import { TiMessages } from "react-icons/ti";
 
 const MessageContainer = () => {
-  const { selectedConversation } = conversationsStore();
+  const { selectedConversation, setSelectedConversation } =
+    conversationsStore();
+
+  useEffect(() => {
+    // cleanup function (unmounts)
+    return () => setSelectedConversation(null);
+  }, [setSelectedConversation]);
+
   return selectedConversation ? (
     <div className="md:min-w-[450px] flex flex-col">
       <>
