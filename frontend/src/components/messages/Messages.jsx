@@ -3,17 +3,18 @@ import useGetMessages from "../../hooks/useGetMessages.js";
 import MessageSkeleton from "../skeletons/MessageSkeleton.jsx";
 import Message from "./Message.jsx";
 import conversationsStore from "../../store/conversations.store.js";
+import useListenMessages from "../../hooks/useListenMessages.js";
 
 const Messages = () => {
   const { loading, messages } = useGetMessages();
   const lastMessageRef = useRef(null);
   const { selectedConversation } = conversationsStore();
 
+  useListenMessages();
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
     if (messages && !loading) {
-      console.log("Messages changed. Scrolling to bottom.");
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+      lastMessageRef.current?.scrollIntoView();
     }
   }, [messages, selectedConversation, loading]);
 
