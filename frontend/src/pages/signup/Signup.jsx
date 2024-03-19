@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import GenderCheckbox from "./GenderCheckbox.jsx";
-import { useState } from "react";
 import useSignUp from "../../hooks/useSignup.js";
 
 const Signup = () => {
@@ -12,7 +14,9 @@ const Signup = () => {
     confirmPassword: "",
     gender: "",
   });
-  const { loading, signup } = useSignUp();
+  const { loading, signupStatus, signup } = useSignUp();
+  const navigate = useNavigate();
+
   //#endregion
 
   //#region "Functions"
@@ -20,6 +24,12 @@ const Signup = () => {
     e.preventDefault();
     await signup(formData);
   };
+
+  useEffect(() => {
+    if (signupStatus === 200) {
+      navigate("/login");
+    }
+  }, [signupStatus, navigate]);
 
   const handleChangeGender = (gender) => {
     setFormData({ ...formData, gender: gender });
