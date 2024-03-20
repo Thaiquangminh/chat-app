@@ -7,7 +7,6 @@ const Conversation = ({ avatar, fullName, icon, lastIndex, conversation }) => {
   const isSelected = selectedConversation?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
   const isOnline = onlineUsers.includes(conversation._id);
-  console.log("onlineUsers", onlineUsers);
 
   return (
     <>

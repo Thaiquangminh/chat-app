@@ -5,7 +5,6 @@ const useSendMessage = () => {
   const [loadingSendMsg, setLoading] = useState(false)
   const { messages, setMessages, selectedConversation } = conversationsStore()
   const sendMessage = async (message) => {
-    console.log('do send messages')
     setLoading(true)
     try {
       const res = await fetch(`/api/message/send/${selectedConversation._id}`, {
@@ -18,7 +17,6 @@ const useSendMessage = () => {
 
       const data = await (res.json())
       setMessages([...messages, data.data]);
-      console.log(data.data)
     } catch (error) {
       console.log(error.message)
     } finally {

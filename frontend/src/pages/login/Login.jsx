@@ -1,18 +1,32 @@
 import { Link } from "react-router-dom";
+import { BsEye } from "react-icons/bs";
+import { BsEyeSlash } from "react-icons/bs";
 import useLogin from "../../hooks/useLogin";
 import { useState } from "react";
 
 const Login = () => {
+  //#region "State"
   const { loading, login } = useLogin();
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: "",
   });
+  const [typePassword, setTypePassword] = useState("password");
+  //#endregion
 
+  //#region "Functions"
   const handleLogin = (e) => {
     login(loginForm);
     e.preventDefault();
   };
+
+  const handleTogglePassword = () => {
+    typePassword === "password"
+      ? setTypePassword("text")
+      : setTypePassword("password");
+  };
+  //#endregion
+
   return (
     <div className="flex flex-col items-center justify-center min-w-96 mx-auto">
       <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0">
@@ -40,18 +54,28 @@ const Login = () => {
             <label className="label">
               <span className="text-base label-text">Password</span>
             </label>
-            <input
-              type="password"
-              placeholder="Enter Password"
-              className="w-full input input-bordered h-10"
-              onChange={(e) =>
-                setLoginForm({ ...loginForm, password: e.target.value })
-              }
-            />
+
+            <div className="relative">
+              <input
+                type={typePassword}
+                placeholder="Enter Password"
+                className="w-full input input-bordered h-10"
+                onChange={(e) =>
+                  setLoginForm({ ...loginForm, password: e.target.value })
+                }
+              />
+              <div
+                onClick={handleTogglePassword}
+                className="absolute cursor-pointer right-[5%] top-[50%] -translate-y-1/2"
+              >
+                {typePassword === "password" ? <BsEyeSlash /> : <BsEye />}
+              </div>
+            </div>
           </div>
+
           <Link
             to="/signup"
-            className="text-sm  hover:underline hover:text-blue-600 mt-2 inline-block"
+            className="text-sm hover:underline hover:text-blue-600 mt-2 inline-block"
           >
             {"Don't"} have an account?
           </Link>

@@ -11,7 +11,6 @@ import { app, server } from './socket/socket.js'
 const port = process.env.PORT || 5000
 
 const __dirname = path.resolve()
-console.log(__dirname)
 
 // Enviroments
 dotenv.config()
