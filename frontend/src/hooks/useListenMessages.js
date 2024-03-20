@@ -8,13 +8,47 @@ const useListenMessages = () => {
   const { socket } = useSocketContext();
   const { messages, setMessages } = conversationsStore();
 
-  console.log('socket from listen', socket)
+
+  //#region "Notifications"
+  // Function to handle notification
+  const handleNotification = () => {
+    if (Notification.permission === "granted") {
+      new Notification("New Message Received", {
+        body: "Bạn nhận được 1 thông báo mới!",
+      });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("New Message Received", {
+            body: "Bạn nhận được 1 thông báo mới!",
+          });
+        }
+      });
+    }
+  };
+
+  //#region "Effects"
+  useEffect(() => {
+    // Check for permission when the component mounts
+    if (
+      Notification.permission !== "granted" &&
+      Notification.permission !== "denied"
+    ) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          // Display initial notification if permission is granted
+          handleNotification();
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     socket?.on("newMessage", (newMessage) => {
       newMessage.shouldShake = true;
       const sound = new Audio(notificationSound);
       sound.play();
+      handleNotification();
       setMessages([...messages, newMessage]);
     });
 
