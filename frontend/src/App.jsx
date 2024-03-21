@@ -6,6 +6,7 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login.jsx";
 import Signup from "./pages/signup/Signup.jsx";
 import { useAuthContext } from "./context/AuthContext.jsx";
+import ForgotPassword from "./pages/forgotPassword/ForgotPassword.jsx";
 
 function App() {
   const { authUser } = useAuthContext();
@@ -21,6 +22,7 @@ function App() {
           path="/"
           element={!authUser ? <Navigate to="/login" /> : <Home />}
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
       <Toaster />
     </div>

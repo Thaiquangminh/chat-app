@@ -9,7 +9,6 @@ const useListenMessages = () => {
   const { socket } = useSocketContext();
   const { messages, setMessages } = conversationsStore();
 
-
   //#region "Notifications"
   // Function to handle notification
   const handleNotification = () => {

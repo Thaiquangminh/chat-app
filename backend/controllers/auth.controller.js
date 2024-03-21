@@ -111,3 +111,50 @@ export const logout = (req, res) => {
     })
   }
 }
+
+export const findAccountByUserName = async (req, res) => {
+  const { username } = req.query
+  const user = await User.findOne({ username: username })
+  if (user) {
+    res.status(200).json({
+      statusCode: 200,
+      message: "Get account successfully"
+    })
+  }
+  else {
+    res.status(400).json({
+      statusCode: "400",
+      message: "Username do not existed"
+    })
+  }
+}
+
+export const changePassword = async (req, res) => {
+  try {
+    const { username, newPassword } = req.body
+    // Hash password
+    const salt = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(newPassword, salt);
+    // const user = await User.updateOne({ username: username }, {
+    //   $set: {
+    //     password: hashPassword
+    //   }
+    // })
+    // Update password for the user
+    const updatedUser = await User.findOneAndUpdate({ username: username }, { password: hashPassword }, { new: true }).select("-password");
+    if (updatedUser) {
+      await updatedUser.save()
+      res.status(200).json({
+        statusCode: 200,
+        message: "Change password successfully",
+        data: updatedUser
+      })
+    }
+  }
+  catch (error) {
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Internal Server Error'
+    })
+  }
+}

@@ -7,7 +7,7 @@ export const getUsers = async (req, res) => {
     const allUsers = await User.find({
       // Except logged in account
       _id: { $ne: loggedIdUser }
-    })
+    }).select("-password")
 
     res.status(200).json({
       statusCode: 200,
