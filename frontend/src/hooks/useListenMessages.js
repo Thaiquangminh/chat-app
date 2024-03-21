@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { isMobile } from 'react-device-detect';
 
 import { useSocketContext } from "../context/SocketContext";
 import conversationsStore from "../store/conversations.store";
@@ -12,20 +13,22 @@ const useListenMessages = () => {
   //#region "Notifications"
   // Function to handle notification
   const handleNotification = () => {
-    if (Notification.permission === "granted") {
-      new Notification("New Message Received", {
-        body: "Bạn nhận được 1 thông báo mới!",
-        icon: '/messenger.png'
-      });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          new Notification("New Message Received", {
-            body: "Bạn nhận được 1 thông báo mới!",
-            icon: '/messenger.png'
-          });
-        }
-      });
+    if (isMobile) {
+      if (Notification.permission === "granted") {
+        new Notification("New Message Received", {
+          body: "Bạn nhận được 1 thông báo mới!",
+          icon: '/messenger.png'
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification("New Message Received", {
+              body: "Bạn nhận được 1 thông báo mới!",
+              icon: '/messenger.png'
+            });
+          }
+        });
+      }
     }
   };
 
@@ -34,7 +37,7 @@ const useListenMessages = () => {
     // Check for permission when the component mounts
     if (
       Notification.permission !== "granted" &&
-      Notification.permission !== "denied"
+      Notification.permission !== "denied" && !isMobile
     ) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
