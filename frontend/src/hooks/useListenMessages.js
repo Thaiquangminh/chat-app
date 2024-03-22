@@ -12,7 +12,7 @@ const useListenMessages = () => {
   //#region "Notifications"
   // Function to handle notification
   const handleNotification = () => {
-    if (isMobile) {
+    if (!isMobile) {
       if (Notification.permission === "granted") {
         new Notification("New Message Received", {
           body: "Bạn nhận được 1 thông báo mới!",
@@ -29,6 +29,7 @@ const useListenMessages = () => {
         });
       }
     }
+    return
   };
 
   //#region "Effects"
